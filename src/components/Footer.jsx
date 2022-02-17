@@ -6,25 +6,27 @@ import {
   Room,
   Twitter,
   YouTube
-} from '@mui/icons-material'
-import styled from 'styled-components'
+} from '@mui/icons-material';
+import styled from 'styled-components';
+import { mobile } from '../responsive';
 
 const Container = styled.div`
   display: flex;
-`
+  ${mobile({ flexDirection: 'column' })}
+`;
 const Left = styled.div`
   display: flex;
   flex: 1;
   flex-direction: column;
   padding: 20px;
-`
-const Logo = styled.h1``
+`;
+const Logo = styled.h1``;
 const Desc = styled.p`
   margin: 20px 0;
-`
+`;
 const SocialContainer = styled.div`
   display: flex;
-`
+`;
 const SocialIcon = styled.div`
   align-items: center;
   border-radius: 50%;
@@ -35,15 +37,16 @@ const SocialIcon = styled.div`
   justify-content: center;
   margin-right: 20px;
   width: 40px;
-`
+`;
 
 const Center = styled.div`
   flex: 1;
   padding: 20px;
-`
+  ${mobile({ display: 'none' })}
+`;
 const Title = styled.h3`
   margin-bottom: 20px;
-`
+`;
 
 const List = styled.ul`
   margin: 0;
@@ -51,27 +54,28 @@ const List = styled.ul`
   display: flex;
   flex-wrap: wrap;
   list-style: none;
-`
+`;
 
 const ListItem = styled.li`
   margin-bottom: 10px;
   width: 50%;
-`
+`;
 
 const Right = styled.div`
   flex: 1;
   padding: 20px;
-`
+  ${mobile({ backgroundColor: '#fbfbfb' })}
+`;
 
 const ContactItem = styled.div`
   align-items: center;
   display: flex;
   margin-bottom: 20px;
-`
+`;
 
 const Payment = styled.img`
   width: 50%;
-`
+`;
 
 const Footer = () => {
   return (
@@ -129,7 +133,7 @@ const Footer = () => {
         <Payment src='https://i.ibb.co/Qfvn4z6/payment.png' />
       </Right>
     </Container>
-  )
-}
+  );
+};
 
-export default Footer
+export default Footer;
