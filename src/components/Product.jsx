@@ -1,7 +1,8 @@
-import Favorite from '@mui/icons-material/Favorite'
-import Search from '@mui/icons-material/Search'
-import ShoppingCart from '@mui/icons-material/ShoppingCart'
-import styled from 'styled-components'
+import Favorite from '@mui/icons-material/Favorite';
+import Search from '@mui/icons-material/Search';
+import ShoppingCart from '@mui/icons-material/ShoppingCart';
+import { Link } from 'react-router-dom';
+import styled from 'styled-components';
 
 const Info = styled.div`
   align-items: center;
@@ -17,7 +18,7 @@ const Info = styled.div`
   transition: all 0.5s ease;
   width: 100%;
   z-index: 3;
-`
+`;
 
 const Container = styled.div`
   align-items: center;
@@ -32,7 +33,7 @@ const Container = styled.div`
   &:hover ${Info} {
     opacity: 1;
   }
-`
+`;
 
 const Circle = styled.div`
   background-color: #fafafa;
@@ -40,11 +41,11 @@ const Circle = styled.div`
   height: 75%;
   position: absolute;
   width: 85%;
-`
+`;
 const Image = styled.img`
   height: 75%;
   z-index: 2;
-`
+`;
 
 const Icon = styled.div`
   align-items: center;
@@ -62,26 +63,28 @@ const Icon = styled.div`
     background-color: #e9f5f5;
     transform: scale(1.1);
   }
-`
+`;
 
 const Product = ({ product }) => {
   return (
-    <Container>
-      <Circle />
-      <Image src={product.img} />
-      <Info>
-        <Icon>
-          <ShoppingCart />
-        </Icon>
-        <Icon>
-          <Search />
-        </Icon>
-        <Icon>
-          <Favorite />
-        </Icon>
-      </Info>
-    </Container>
-  )
-}
+    <Link to={`/product/${product.id}`}>
+      <Container>
+        <Circle />
+        <Image src={product.img} />
+        <Info>
+          <Icon>
+            <ShoppingCart />
+          </Icon>
+          <Icon>
+            <Search />
+          </Icon>
+          <Icon>
+            <Favorite />
+          </Icon>
+        </Info>
+      </Container>
+    </Link>
+  );
+};
 
-export default Product
+export default Product;

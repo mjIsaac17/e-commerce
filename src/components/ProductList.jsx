@@ -9,7 +9,7 @@ const Container = styled.div`
   padding: 20px;
 `;
 
-const Products = () => {
+const ProductList = () => {
   return (
     <Container>
       {popularProducts.map((product) => (
@@ -19,4 +19,4 @@ const Products = () => {
   );
 };
 
-export default Products;
+export default ProductList;

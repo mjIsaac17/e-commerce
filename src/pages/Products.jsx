@@ -3,7 +3,7 @@ import Announcement from '../components/Announcement';
 import Footer from '../components/Footer';
 import Navbar from '../components/Navbar';
 import Newsletter from '../components/Newsletter';
-import Products from '../components/Products';
+import ProductList from '../components/ProductList';
 import { mobile } from '../responsive';
 
 const Container = styled.div``;
@@ -33,7 +33,7 @@ const Select = styled.select`
 `;
 const Option = styled.option``;
 
-const ProductList = () => {
+const Products = () => {
   return (
     <Container>
       <Navbar />
@@ -69,11 +69,11 @@ const ProductList = () => {
           </Select>
         </Filter>
       </FilterContainer>
-      <Products />
+      <ProductList />
       <Newsletter />
       <Footer />
     </Container>
   );
 };
 
-export default ProductList;
+export default Products;
