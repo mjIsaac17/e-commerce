@@ -1,3 +1,5 @@
+import { useState } from 'react';
+import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import Announcement from '../components/Announcement';
 import Footer from '../components/Footer';
@@ -34,16 +36,34 @@ const Select = styled.select`
 const Option = styled.option``;
 
 const Products = () => {
+  const { category } = useParams();
+  const [filters, setFilters] = useState({});
+  const [sort, setSort] = useState(null);
+
+  const handleFilters = (e) => {
+    if (e.target.value !== '')
+      setFilters({ ...filters, [e.target.name]: e.target.value });
+    else {
+      const newFilters = { ...filters };
+      delete newFilters[e.target.name];
+      setFilters(newFilters);
+    }
+  };
+
+  const handleSort = (e) => {
+    setSort(e.target.value);
+  };
   return (
     <Container>
       <Navbar />
       <Announcement />
-      <Title>Dresses</Title>
+      <Title>{category}</Title>
       <FilterContainer>
         <Filter>
           <FilterText>Filter products:</FilterText>
-          <Select defaultValue='Color'>
+          <Select name='color' defaultValue='Color' onChange={handleFilters}>
             <Option disabled>Color</Option>
+            <Option value=''>All</Option>
             <Option>White</Option>
             <Option>Black</Option>
             <Option>Red</Option>
@@ -51,8 +71,9 @@ const Products = () => {
             <Option>Yellow</Option>
             <Option>Green</Option>
           </Select>
-          <Select defaultValue='Size'>
+          <Select name='size' defaultValue='Size' onChange={handleFilters}>
             <Option disabled>Size</Option>
+            <Option value=''>All</Option>
             <Option>XS</Option>
             <Option>S</Option>
             <Option>M</Option>
@@ -62,14 +83,14 @@ const Products = () => {
         </Filter>
         <Filter>
           <FilterText>Sort products:</FilterText>
-          <Select defaultValue='Newest'>
-            <Option>Newest</Option>
-            <Option>Price (asc)</Option>
-            <Option>Price (desc)</Option>
+          <Select defaultValue='Newest' onChange={handleSort}>
+            <Option value='newest'>Newest</Option>
+            <Option value='asc'>Price (asc)</Option>
+            <Option value='desc'>Price (desc)</Option>
           </Select>
         </Filter>
       </FilterContainer>
-      <ProductList />
+      <ProductList category={category} filters={filters} sort={sort} />
       <Newsletter />
       <Footer />
     </Container>

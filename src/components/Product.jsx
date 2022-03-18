@@ -67,23 +67,23 @@ const Icon = styled.div`
 
 const Product = ({ product }) => {
   return (
-    <Link to={`/product/${product.id}`}>
-      <Container>
-        <Circle />
-        <Image src={product.img} />
-        <Info>
-          <Icon>
-            <ShoppingCart />
-          </Icon>
-          <Icon>
+    <Container>
+      <Circle />
+      <Image src={product.img} />
+      <Info>
+        <Icon>
+          <ShoppingCart />
+        </Icon>
+        <Icon>
+          <Link to={`/product/${product._id}`}>
             <Search />
-          </Icon>
-          <Icon>
-            <Favorite />
-          </Icon>
-        </Info>
-      </Container>
-    </Link>
+          </Link>
+        </Icon>
+        <Icon>
+          <Favorite />
+        </Icon>
+      </Info>
+    </Container>
   );
 };
 

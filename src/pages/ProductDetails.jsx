@@ -1,9 +1,14 @@
 import { Add, Remove } from '@mui/icons-material';
+import { useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import Announcement from '../components/Announcement';
 import Footer from '../components/Footer';
 import Navbar from '../components/Navbar';
 import Newsletter from '../components/Newsletter';
+import Spinner from '../components/Spinner';
+import { publicRequest } from '../helpers/axiosRequests';
+import { addProduct } from '../redux/slices/cartSlice';
 import { mobile } from '../responsive';
 
 const Container = styled.div``;
@@ -17,9 +22,9 @@ const ImageContainer = styled.div`
   flex: 1;
 `;
 const Image = styled.img`
-  height: 90vh;
+  max-height: 90vh;
   object-fit: cover;
-  width: 100%;
+  max-width: 100%;
   ${mobile({ height: '40vh' })}
 `;
 const InfoContainer = styled.div`
@@ -102,7 +107,7 @@ const Button = styled.button`
   border: 2px solid teal;
   cursor: pointer;
   font-weight: 500;
-  padding: 15px;
+  padding: 10px;
 
   &:hover {
     background-color: #f8f4f4;
@@ -110,50 +115,89 @@ const Button = styled.button`
 `;
 
 const ProductDetails = () => {
+  const { id } = useParams();
+  const [product, setProduct] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  const [amount, setAmount] = useState(1);
+  const [color, setColor] = useState(null);
+  const [size, setSize] = useState(null);
+
+  const handleAmount = (type) => {
+    if (type === 'add') setAmount(amount + 1);
+    else amount > 1 && setAmount(amount - 1);
+  };
+
+  const handleAdd = () => {
+    console.log('add to cart');
+    //addProduct({})
+  };
+
+  useEffect(() => {
+    const getProduct = async () => {
+      try {
+        const res = await publicRequest.get(`products/${id}`);
+        if (res.statusText === 'OK') setProduct(res.data.product);
+        console.log(res);
+      } catch (error) {}
+      setLoading(false);
+    };
+    getProduct();
+  }, [id]);
+
   return (
     <Container>
       <Navbar />
       <Announcement />
       <Wrapper>
-        <ImageContainer>
-          <Image src='https://i.ibb.co/S6qMxwr/jean.jpg' />
-        </ImageContainer>
-        <InfoContainer>
-          <Title>Product name</Title>
-          <Desc>
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Ipsum quae
-            animi fugit amet obcaecati accusantium asperiores quisquam, qui sit
-            ea! Molestias repellat magnam minus harum sit aut iste consequatur.
-            Minus!
-          </Desc>
-          <Price>$ 20</Price>
-          <FilterContainer>
-            <Filter>
-              <FilterTitle>Color</FilterTitle>
-              <FilterColor color='black' />
-              <FilterColor color='darkBlue' />
-              <FilterColor color='red' />
-            </Filter>
-            <Filter>
-              <FilterTitle>Size</FilterTitle>
-              <FilterSize>
-                <FilterSizeOption>XS</FilterSizeOption>
-                <FilterSizeOption>S</FilterSizeOption>
-                <FilterSizeOption>M</FilterSizeOption>
-                <FilterSizeOption>L</FilterSizeOption>
-                <FilterSizeOption>XL</FilterSizeOption>
-              </FilterSize>
-            </Filter>
-          </FilterContainer>
-          <AddContainer>
-            <AmountContainer>
-              <Remove style={{ cursor: 'pointer' }} />
-              <Amount>1</Amount>
-              <Add style={{ cursor: 'pointer' }} />
-            </AmountContainer>
-            <Button>ADD TO CAR</Button>
-          </AddContainer>
-        </InfoContainer>
+        {loading ? (
+          <Spinner />
+        ) : (
+          <>
+            <ImageContainer>
+              <Image src={product.img} />
+            </ImageContainer>
+            <InfoContainer>
+              <Title>{product.title}</Title>
+              <Desc>{product.desc}</Desc>
+              <Price>$ {product.price}</Price>
+              <FilterContainer>
+                <Filter>
+                  <FilterTitle>Color</FilterTitle>
+                  {product.color.map((color) => (
+                    <FilterColor
+                      key={color}
+                      color={color}
+                      onClick={() => setColor(color)}
+                    />
+                  ))}
+                </Filter>
+                <Filter>
+                  <FilterTitle>Size</FilterTitle>
+                  <FilterSize onChange={(e) => setSize(e.target.value)}>
+                    {product.size.map((size) => (
+                      <FilterSizeOption key={size}>{size}</FilterSizeOption>
+                    ))}
+                  </FilterSize>
+                </Filter>
+              </FilterContainer>
+              <AddContainer>
+                <AmountContainer>
+                  <Remove
+                    style={{ cursor: 'pointer' }}
+                    onClick={() => handleAmount('reduce')}
+                  />
+                  <Amount>{amount}</Amount>
+                  <Add
+                    style={{ cursor: 'pointer' }}
+                    onClick={() => handleAmount('add')}
+                  />
+                </AmountContainer>
+                <Button onClick={handleAdd}>ADD TO CAR</Button>
+              </AddContainer>
+            </InfoContainer>
+          </>
+        )}
       </Wrapper>
       <Newsletter />
       <Footer />
