@@ -1,5 +1,6 @@
 import { Add, Remove } from '@mui/icons-material';
 import { useEffect, useState } from 'react';
+import { useDispatch } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import Announcement from '../components/Announcement';
@@ -115,10 +116,13 @@ const Button = styled.button`
 `;
 
 const ProductDetails = () => {
+  const dispatch = useDispatch();
+
   const { id } = useParams();
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
 
+  // Selected product details
   const [amount, setAmount] = useState(1);
   const [color, setColor] = useState(null);
   const [size, setSize] = useState(null);
@@ -130,7 +134,17 @@ const ProductDetails = () => {
 
   const handleAdd = () => {
     console.log('add to cart');
-    //addProduct({})
+    dispatch(
+      addProduct({
+        product: {
+          ...product,
+          amount,
+          color,
+          size
+        },
+        price: product.price * amount
+      })
+    );
   };
 
   useEffect(() => {
@@ -175,6 +189,7 @@ const ProductDetails = () => {
                 <Filter>
                   <FilterTitle>Size</FilterTitle>
                   <FilterSize onChange={(e) => setSize(e.target.value)}>
+                    <FilterSizeOption>Select</FilterSizeOption>
                     {product.size.map((size) => (
                       <FilterSizeOption key={size}>{size}</FilterSizeOption>
                     ))}

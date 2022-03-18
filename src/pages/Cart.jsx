@@ -1,5 +1,6 @@
 import { Add, Remove } from '@mui/icons-material';
 import React from 'react';
+import { useSelector } from 'react-redux';
 import styled from 'styled-components';
 import Announcement from '../components/Announcement';
 import Footer from '../components/Footer';
@@ -146,6 +147,8 @@ const SummaryButton = styled.button`
 `;
 
 const Cart = () => {
+  const { products, quantity, total } = useSelector((state) => state.cart);
+
   return (
     <Container>
       <Navbar />
@@ -155,14 +158,47 @@ const Cart = () => {
         <Top>
           <TopButton>Continue shopping</TopButton>
           <TopTexts>
-            <TopText>Shopping Bag(2)</TopText>
+            <TopText>Shopping Bag(quantity)</TopText>
             <TopText>Your Wishlist(0)</TopText>
           </TopTexts>
           <TopButton type='filled'>Checkout now</TopButton>
         </Top>
         <Bottom>
           <Info>
-            <Product>
+            {products.map((product) => (
+              <>
+                <Product>
+                  <ProductDetail>
+                    <Image src={product.img} />
+                    <Details>
+                      <ProductName>
+                        <b>Product:</b> {product.title}
+                      </ProductName>
+                      <ProductId>
+                        <b>ID:</b> {product._id}
+                      </ProductId>
+                      <ProductColor color={product.color} />
+                      <ProductSize>
+                        <b>Size:</b> {product.size}
+                      </ProductSize>
+                    </Details>
+                  </ProductDetail>
+                  <PriceDetail>
+                    <ProductAmountContainer>
+                      <Add />
+                      <ProductAmount>{product.amount}</ProductAmount>
+                      <Remove />
+                    </ProductAmountContainer>
+                    <ProductPrice>
+                      $ {product.price * product.amount}
+                    </ProductPrice>
+                  </PriceDetail>
+                </Product>
+                <Hr />
+              </>
+            ))}
+
+            {/* <Product>
               <ProductDetail>
                 <Image src='https://www.seekpng.com/png/full/25-251432_running-shoes-png-transparent-image-nike-running-shoes.png' />
                 <Details>
@@ -186,39 +222,13 @@ const Cart = () => {
                 </ProductAmountContainer>
                 <ProductPrice>$ 30</ProductPrice>
               </PriceDetail>
-            </Product>
-            <Hr />
-            <Product>
-              <ProductDetail>
-                <Image src='https://www.seekpng.com/png/full/25-251432_running-shoes-png-transparent-image-nike-running-shoes.png' />
-                <Details>
-                  <ProductName>
-                    <b>Product:</b> Nike shoes
-                  </ProductName>
-                  <ProductId>
-                    <b>ID:</b> 123456
-                  </ProductId>
-                  <ProductColor color='black' />
-                  <ProductSize>
-                    <b>Size:</b> 9.5
-                  </ProductSize>
-                </Details>
-              </ProductDetail>
-              <PriceDetail>
-                <ProductAmountContainer>
-                  <Add />
-                  <ProductAmount>2</ProductAmount>
-                  <Remove />
-                </ProductAmountContainer>
-                <ProductPrice>$ 30</ProductPrice>
-              </PriceDetail>
-            </Product>
+            </Product> */}
           </Info>
           <Summary>
             <SummaryTitle>Order summary</SummaryTitle>
             <SummaryItem>
               <SummaryItemText>Subtotal</SummaryItemText>
-              <SummaryItemPrice>$ 30</SummaryItemPrice>
+              <SummaryItemPrice>$ {total}</SummaryItemPrice>
             </SummaryItem>
             <SummaryItem>
               <SummaryItemText>Estimated shipping</SummaryItemText>
@@ -230,7 +240,7 @@ const Cart = () => {
             </SummaryItem>
             <SummaryItem type='total'>
               <SummaryItemText>Total</SummaryItemText>
-              <SummaryItemPrice>$ 30</SummaryItemPrice>
+              <SummaryItemPrice>$ {total}</SummaryItemPrice>
             </SummaryItem>
             <SummaryButton>Checkout now</SummaryButton>
           </Summary>

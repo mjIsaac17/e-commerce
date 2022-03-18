@@ -4,6 +4,7 @@ import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import { Badge } from '@mui/material';
 import { mobile } from '../responsive';
 import { useSelector } from 'react-redux';
+import { Link } from 'react-router-dom';
 
 const Container = styled.div`
   height: 60px;
@@ -88,11 +89,13 @@ const Navbar = () => {
           <Right>
             <MenuItem>Register</MenuItem>
             <MenuItem>Sign in</MenuItem>
-            <MenuItem>
-              <Badge badgeContent={cartState.quantity} color='primary'>
-                <ShoppingCartIcon color='action' />
-              </Badge>
-            </MenuItem>
+            <Link to='/cart'>
+              <MenuItem>
+                <Badge badgeContent={cartState.quantity} color='primary'>
+                  <ShoppingCartIcon color='action' />
+                </Badge>
+              </MenuItem>
+            </Link>
           </Right>
         </Wrapper>
       </Container>
