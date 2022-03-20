@@ -1,10 +1,13 @@
 import { Add, Remove } from '@mui/icons-material';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import StripeCheckout from 'react-stripe-checkout';
 import styled from 'styled-components';
 import Announcement from '../components/Announcement';
 import Footer from '../components/Footer';
 import Navbar from '../components/Navbar';
+import { publicRequest } from '../helpers/axiosRequests';
 import { mobile } from '../responsive';
 
 const Container = styled.div``;
@@ -146,8 +149,31 @@ const SummaryButton = styled.button`
   width: 100%;
 `;
 
+const KEY = process.env.REACT_APP_STRIPE_KEY;
+
 const Cart = () => {
-  const { products, quantity, total } = useSelector((state) => state.cart);
+  const navigate = useNavigate();
+  const { products, total } = useSelector((state) => state.cart);
+  const [stripeToken, setStripeToken] = useState(null);
+
+  const onToken = (token) => {
+    setStripeToken(token);
+  };
+
+  useEffect(() => {
+    const makePayment = async () => {
+      try {
+        const resp = await publicRequest.post('checkout/payment', {
+          tokenId: stripeToken.id,
+          amount: total * 100
+        });
+        navigate('/orders', { state: { data: resp.data } });
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    stripeToken && makePayment();
+  }, [stripeToken, total]);
 
   return (
     <Container>
@@ -165,9 +191,9 @@ const Cart = () => {
         </Top>
         <Bottom>
           <Info>
-            {products.map((product) => (
+            {products.map((product, idx) => (
               <>
-                <Product>
+                <Product key={idx}>
                   <ProductDetail>
                     <Image src={product.img} />
                     <Details>
@@ -197,32 +223,6 @@ const Cart = () => {
                 <Hr />
               </>
             ))}
-
-            {/* <Product>
-              <ProductDetail>
-                <Image src='https://www.seekpng.com/png/full/25-251432_running-shoes-png-transparent-image-nike-running-shoes.png' />
-                <Details>
-                  <ProductName>
-                    <b>Product:</b> Nike shoes
-                  </ProductName>
-                  <ProductId>
-                    <b>ID:</b> 123456
-                  </ProductId>
-                  <ProductColor color='black' />
-                  <ProductSize>
-                    <b>Size:</b> 9.5
-                  </ProductSize>
-                </Details>
-              </ProductDetail>
-              <PriceDetail>
-                <ProductAmountContainer>
-                  <Add />
-                  <ProductAmount>2</ProductAmount>
-                  <Remove />
-                </ProductAmountContainer>
-                <ProductPrice>$ 30</ProductPrice>
-              </PriceDetail>
-            </Product> */}
           </Info>
           <Summary>
             <SummaryTitle>Order summary</SummaryTitle>
@@ -242,7 +242,18 @@ const Cart = () => {
               <SummaryItemText>Total</SummaryItemText>
               <SummaryItemPrice>$ {total}</SummaryItemPrice>
             </SummaryItem>
-            <SummaryButton>Checkout now</SummaryButton>
+            <StripeCheckout
+              name='iE-commerce'
+              image='https://ipmark.com/wp-content/uploads/nuevo-modelo-de-negocio-auge-del-ecommerce-ok-800x445.jpg'
+              billingAddress
+              shippingAddress
+              description={`Your total is ${total}`}
+              amount={total * 100}
+              token={onToken}
+              stripeKey={KEY}
+            >
+              <SummaryButton>Checkout now</SummaryButton>
+            </StripeCheckout>
           </Summary>
         </Bottom>
       </Wrapper>
