@@ -1,4 +1,8 @@
+import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
+import { useForm } from '../hooks/useForm';
+import { login } from '../redux/apiRequests/userRequests';
+import { loginSetError } from '../redux/reducers/userReducer';
 import { mobile } from '../responsive';
 
 const Container = styled.div`
@@ -56,14 +60,54 @@ const Link = styled.a`
   text-decoration: underline;
 `;
 
+const Error = styled.span`
+  color: red;
+  margin-bottom: 1rem;
+  text-align: center;
+`;
+
 const Login = () => {
+  const dispatch = useDispatch();
+  const { error } = useSelector((state) => state.user);
+
+  const { formValues, handleInputChange } = useForm({
+    username: '',
+    password: ''
+  });
+
+  const onSubmit = (e) => {
+    e.preventDefault();
+    if (isFormValid()) login(dispatch, formValues);
+  };
+
+  const isFormValid = () => {
+    if (
+      formValues.username.trim() === '' ||
+      formValues.password.trim() === ''
+    ) {
+      dispatch(loginSetError('All fields are required'));
+      return false;
+    }
+    return true;
+  };
+
   return (
     <Container>
       <Wrapper>
         <Title>Sign in</Title>
-        <Form>
-          <Input placeholder='Username' />
-          <Input placeholder='Password' />
+        <Form onSubmit={onSubmit}>
+          <Input
+            placeholder='Username'
+            name='username'
+            onChange={handleInputChange}
+          />
+          <Input
+            placeholder='Password'
+            name='password'
+            onChange={handleInputChange}
+            type='password'
+          />
+          {error !== '' && <Error>{error}</Error>}
           <Button>Login</Button>
           <Link>Do not you remember your password?</Link>
           <Link>Create a new account</Link>

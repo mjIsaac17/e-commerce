@@ -173,7 +173,7 @@ const Cart = () => {
       }
     };
     stripeToken && makePayment();
-  }, [stripeToken, total]);
+  }, [stripeToken, total, navigate]);
 
   return (
     <Container>
