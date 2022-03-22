@@ -18,10 +18,12 @@ const ProductList = ({ category, filters, sort }) => {
   useEffect(() => {
     const getProducts = async () => {
       try {
-        const res = await publicRequest.get(
+        const resp = await publicRequest(
+          'get',
           category ? `products?category=${category}` : 'products'
         );
-        if (res.statusText === 'OK') setProducts(res.data.products);
+
+        if (resp.products) setProducts(resp.products);
       } catch (error) {}
     };
     getProducts();

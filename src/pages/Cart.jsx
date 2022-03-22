@@ -163,11 +163,11 @@ const Cart = () => {
   useEffect(() => {
     const makePayment = async () => {
       try {
-        const resp = await publicRequest.post('checkout/payment', {
+        const resp = await publicRequest('post', 'checkout/payment', {
           tokenId: stripeToken.id,
           amount: total * 100
         });
-        navigate('/orders', { state: { data: resp.data } });
+        if (resp.data) navigate('/orders', { state: { data: resp.data } });
       } catch (error) {
         console.log(error);
       }

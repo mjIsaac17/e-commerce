@@ -150,9 +150,8 @@ const ProductDetails = () => {
   useEffect(() => {
     const getProduct = async () => {
       try {
-        const res = await publicRequest.get(`products/${id}`);
-        if (res.statusText === 'OK') setProduct(res.data.product);
-        console.log(res);
+        const resp = await publicRequest('get', `products/${id}`);
+        if (resp.product) setProduct(resp.product);
       } catch (error) {}
       setLoading(false);
     };
